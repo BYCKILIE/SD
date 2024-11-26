@@ -1,0 +1,35 @@
+GET         /                                     controllers.HomeController.index()
+GET         /assets/profile_pictures/*file        controllers.Assets.versioned(path="/public/images/profile_pictures", file: Asset)
+
+
+# Security
+POST        /signup                               controllers.security.SignInController.createUser()
+POST        /login                                controllers.security.AuthController.authenticate()
+GET         /auth                                 controllers.security.AuthController.authorize()
+GET         /admin                                controllers.security.AuthController.admin()
+
+# User Fatching
+POST        /fetch                                controllers.crud.FetchController.fetchUsers()
+
+# CRUD
+# --client
+#   --users
+GET         /user/read                            controllers.crud.UsersController.readUser()
+POST        /user/update                          controllers.crud.UsersController.updateUser()
+GET         /user/delete                          controllers.crud.UsersController.deleteUser()
+
+#   --profies
+GET         /profile/read                         controllers.crud.ProfilesController.readProfile()
+POST        /profile/update                       controllers.crud.ProfilesController.updateProfile()
+POST        /profile/picture                      controllers.crud.ProfilesController.uploadImage()
+
+# --admin
+#   --users
+POST        /admin-user/read                      controllers.admin.UsersController.readUser()
+POST        /admin-user/update                    controllers.admin.UsersController.updateUser()
+POST        /admin-user/role                      controllers.admin.UsersController.changeRole()
+POST        /admin-user/delete                    controllers.admin.UsersController.deleteUser()
+
+#   --profiles
+POST        /admin-profile/read                   controllers.admin.ProfilesController.readProfile()
+POST        /admin-profile/update                 controllers.admin.ProfilesController.updateProfile()

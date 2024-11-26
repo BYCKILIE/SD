@@ -1,0 +1,156 @@
+version: '3'
+
+services:
+  # DBs
+  users_db:
+    container_name: users_db
+    build:
+      context: ./postgres_db
+      dockerfile: Dockerfile 
+    environment:
+      POSTGRES_USER: byke
+      POSTGRES_PASSWORD: byke
+      POSTGRES_DB: sd_users
+    ports:
+      - "5401:5432"
+    volumes:
+      - ./db_data/users_data:/var/lib/postgresql/data
+
+  devices_db:
+    container_name: devices_db
+    build:
+      context: ./postgres_db
+      dockerfile: Dockerfile 
+    environment:
+      POSTGRES_USER: byke
+      POSTGRES_PASSWORD: byke
+      POSTGRES_DB: sd_devices
+    ports:
+      - "5402:5432"
+    volumes:
+      - ./db_data/devices_data:/var/lib/postgresql/data
+
+  info_db:
+    container_name: info_db
+    build:
+      context: ./postgres_db
+      dockerfile: Dockerfile 
+    environment:
+      POSTGRES_USER: byke
+      POSTGRES_PASSWORD: byke
+      POSTGRES_DB: sd_info
+    ports:
+      - "5404:5432"
+    volumes:
+      - ./db_data/info_data:/var/lib/postgresql/data
+
+  chat_db:
+    container_name: chat_db
+    build:
+      context: ./postgres_db
+      dockerfile: Dockerfile 
+    environment:
+      POSTGRES_USER: byke
+      POSTGRES_PASSWORD: byke
+      POSTGRES_DB: sd_chat
+    ports:
+      - "5403:5432"
+    volumes:
+      - ./db_data/chat_data:/var/lib/postgresql/data
+  
+  # Microservices
+  client:
+    container_name: sd_client
+    build:
+      context: ./client
+      dockerfile: Dockerfile 
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+  users_server:
+    container_name: sd_users
+    build:
+      context: ./UserManagement
+      dockerfile: Dockerfile 
+    environment:
+      - PORT=7021
+
+      - DB_HOST=users_db
+      - DB_PORT=5432
+      - DB_NAME=sd_users
+      - DB_USERNAME=byke
+      - DB_PASSWORD=byke
+    restart: unless-stopped
+
+  devices_server:
+    container_name: sd_devices
+    build:
+      context: ./DeviceManagement
+      dockerfile: Dockerfile 
+    environment:
+      - PORT=7022
+
+      - DB_HOST=devices_db
+      - DB_PORT=5432
+      - DB_NAME=sd_devices
+      - DB_USERNAME=byke
+      - DB_PASSWORD=byke
+    restart: unless-stopped
+
+  chat_server:
+    container_name: sd_chat
+    build:
+      context: ./ChatManagement
+      dockerfile: Dockerfile 
+    environment:
+      - PORT=7024
+
+      - DB_HOST=chat_db
+      - DB_PORT=5432
+      - DB_NAME=sd_chat
+      - DB_USERNAME=byke
+      - DB_PASSWORD=byke
+    restart: unless-stopped
+
+  # Reverse Proxi
+  nginx:
+    image: nginx:latest
+    container_name: sd_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./nginx/nginx.conf:/etc/nginx/nginx.conf"
+      - "./certbot/conf:/etc/letsencrypt"
+      - "./certbot/www:/var/www/certbot"
+    restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot
+    container_name: sd_certbot
+    volumes:
+      - "./certbot/conf:/etc/letsencrypt"
+      - "./certbot/www:/var/www/certbot"
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email tudorovidiub@gmail.com -d sd.bchportal.net -d sd.users.bchportal.net -d sd.devices.bchportal.net -d sd.info.bchportal.net -d sd.chat.bchportal.net --agree-tos
+
+
+# DBs volumes
+volumes:
+  users_data:
+    driver: local
+
+  devices_data:
+    driver: local
+
+  info_data:
+    driver: local
+
+  chat_data:
+    driver: local
+    
+  conf:
+    driver: local
+  
+  www:
+    driver: local

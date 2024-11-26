@@ -1,0 +1,33 @@
+GET         /                         controllers.HomeController.index()
+
+# Device crud
+POST        /admin/create             controllers.crud.DevicesController.createDevice()
+POST        /admin/read               controllers.crud.DevicesController.readDevice()
+POST        /admin/update             controllers.crud.DevicesController.updateDevice()
+POST        /admin/delete             controllers.crud.DevicesController.deleteDevice()
+
+# Device mapping
+POST        /admin/map                controllers.crud.OwnershipsController.createOwnership()
+POST        /admin/unmap              controllers.crud.OwnershipsController.deleteOwnership()
+
+# Device fetching
+POST        /user/fetch               controllers.crud.FetchController.fetchUserDevices()
+
+POST        /admin/available          controllers.crud.FetchController.fetchAvailableDevices()
+POST        /admin/fetch              controllers.crud.FetchController.fetchAdminDevices()
+
+# Security management
+    # Client
+POST        /user/create              controllers.security.UsersServerController.createUser()
+POST        /user/update              controllers.security.UsersServerController.updateUser()
+POST        /user/delete              controllers.security.UsersServerController.deleteUser()
+
+POST        /token/update             controllers.security.UsersServerController.updateToken()
+
+    # Admin
+POST        /admin-user/update        controllers.security.AdminServerController.updateUser()
+POST        /admin-user/delete        controllers.security.AdminServerController.deleteUser()
+
+POST        /token/set-null           controllers.security.AdminServerController.setNullToken()
+
+

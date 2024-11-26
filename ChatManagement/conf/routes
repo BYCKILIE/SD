@@ -1,0 +1,17 @@
+GET         /                    controllers.HomeController.index()
+
+# Security management
+    # Client
+POST        /user/create              controllers.security.UsersServerController.createUser()
+POST        /user/update              controllers.security.UsersServerController.updateUser()
+POST        /user/delete              controllers.security.UsersServerController.deleteUser()
+
+POST        /token/update             controllers.security.UsersServerController.updateToken()
+
+    # Admin
+POST        /admin-user/update        controllers.security.AdminServerController.updateUser()
+POST        /admin-user/delete        controllers.security.AdminServerController.deleteUser()
+
+POST        /token/set-null           controllers.security.AdminServerController.setNullToken()
+
+
